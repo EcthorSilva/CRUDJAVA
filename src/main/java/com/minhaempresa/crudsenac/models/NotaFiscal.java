@@ -51,8 +51,4 @@ public class NotaFiscal {
     public void setValorNota(double valorNota) {
         this.valorNota = valorNota;
     }
-    
-    
-    
-    
 }

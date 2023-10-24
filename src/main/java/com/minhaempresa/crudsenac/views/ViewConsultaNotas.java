@@ -7,6 +7,7 @@ package com.minhaempresa.crudsenac.views;
 import com.minhaempresa.crudsenac.dao.NotaFiscalDAO;
 import com.minhaempresa.crudsenac.models.NotaFiscal;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -32,7 +33,7 @@ public class ViewConsultaNotas extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtNumero = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -44,7 +45,7 @@ public class ViewConsultaNotas extends javax.swing.JFrame {
 
         jLabel1.setText("Número:");
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtNumero.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         btnBuscar.setText("buscar");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -71,9 +72,19 @@ public class ViewConsultaNotas extends javax.swing.JFrame {
         });
 
         btnAtualizar.setText("Atualizar");
+        btnAtualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtualizarActionPerformed(evt);
+            }
+        });
 
         btnExcluir.setBackground(new java.awt.Color(255, 102, 102));
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -92,7 +103,7 @@ public class ViewConsultaNotas extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -105,7 +116,7 @@ public class ViewConsultaNotas extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -124,7 +135,81 @@ public class ViewConsultaNotas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        if(txtNumero.getText().trim().equals("")){
+            atualizarTabela();
+        }else{
+            int numero = Integer.parseInt(txtNumero.getText());
+            
+            // chamar a DAO para filtrar pelo numero da nota
+            ArrayList<NotaFiscal> notas = NotaFiscalDAO.buscarPorNumero(numero);
+            
+            DefaultTableModel modelo = (DefaultTableModel)jTable1.getModel();
+            modelo.setRowCount(0);
+            
+            for (NotaFiscal nota : notas) {
+                modelo.addRow(new String[]{
+                   String.valueOf(nota.getIdNota()),
+                   String.valueOf(nota.getNumeroNota()),
+                   String.valueOf(nota.getValorNota())
+                });
+            }
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
         
+        ViewNotaFiscal novaJanela = new ViewNotaFiscal();
+        novaJanela.setVisible(true);
+        
+    }//GEN-LAST:event_btnAdicionarActionPerformed
+
+    private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
+        // 1 - Passo Resgatar a linha e mandar para um objeto
+        
+        int linhaSelecionada = jTable1.getSelectedRow();
+        
+        // 2 - acessar a camada model da tabela
+        
+        DefaultTableModel modelo = (DefaultTableModel)jTable1.getModel();
+        
+        // 3 - resgatar valores da linha selecionada
+        
+        int idSelecionado = Integer.parseInt(modelo.getValueAt(linhaSelecionada, 0).toString());
+        int numeroSelecionado = Integer.parseInt(modelo.getValueAt(linhaSelecionada, 1).toString());
+        double valorSelecionado = Double.parseDouble(modelo.getValueAt(linhaSelecionada, 2).toString());
+        
+        // 4- passar dados par ao objeto
+        NotaFiscal objAlterar = new NotaFiscal(idSelecionado, numeroSelecionado, valorSelecionado);
+        
+        // 5 - passar o objeto para a tela de alteração
+        ViewNotaFiscal novaTela = new ViewNotaFiscal(objAlterar);
+        novaTela.setVisible(true);
+    }//GEN-LAST:event_btnAtualizarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        // 1 - Passo Resgatar a linha e mandar para um objeto
+        int linhaSelecionada = jTable1.getSelectedRow();
+        
+        // 2 - acessar a camada model da tabela
+        DefaultTableModel modelo = (DefaultTableModel)jTable1.getModel();
+        
+        // 3 - resgatar valores da linha selecionada
+        int idSelecionado = Integer.parseInt(modelo.getValueAt(linhaSelecionada, 0).toString());
+        
+        // 4 - mandar o ID para a DAO excluir
+        boolean retorno = NotaFiscalDAO.excluir(idSelecionado);
+        
+        if (retorno){
+            JOptionPane.showConfirmDialog(rootPane, "Sucesso menozinho.");
+        }else{
+            JOptionPane.showConfirmDialog(rootPane, "Não foi dessa vez baixinho");
+        }
+        
+        
+        atualizarTabela();
+    }//GEN-LAST:event_btnExcluirActionPerformed
+    
+    public void atualizarTabela(){
         // TODO: Chamra DAO para consultar notas do banco
         ArrayList<NotaFiscal> listaRetorno = NotaFiscalDAO.listar();
         
@@ -139,16 +224,8 @@ public class ViewConsultaNotas extends javax.swing.JFrame {
                 String.valueOf(item.getValorNota())
             });
         }
-        
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
-    private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
-        
-        ViewNotaFiscal novaJanela = new ViewNotaFiscal();
-        novaJanela.setVisible(true);
-        
-    }//GEN-LAST:event_btnAdicionarActionPerformed
-
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -192,6 +269,6 @@ public class ViewConsultaNotas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField txtNumero;
     // End of variables declaration//GEN-END:variables
 }

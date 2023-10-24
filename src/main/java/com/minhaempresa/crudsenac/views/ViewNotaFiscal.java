@@ -13,12 +13,25 @@ import javax.swing.JOptionPane;
  * @author ftfer
  */
 public class ViewNotaFiscal extends javax.swing.JFrame {
-
-    /**
-     * Creates new form NotaFiscal
-     */
+    
+    // recebe os dados de uma outra tela
+    NotaFiscal obj = null;
+    
     public ViewNotaFiscal() {
         initComponents();
+    }
+    
+    public ViewNotaFiscal(NotaFiscal objAlterar) {
+        initComponents();
+        
+        this.obj = objAlterar;
+        
+        System.out.println(obj);
+        
+        // passar os valores do objeto para a tela
+        lblID.setText(String.valueOf(obj.getIdNota()));
+        txtNumero.setText(String.valueOf(obj.getNumeroNota()));
+        txtValor.setText(String.valueOf(obj.getValorNota()));
     }
 
     /**
@@ -36,6 +49,8 @@ public class ViewNotaFiscal extends javax.swing.JFrame {
         txtNumero = new javax.swing.JTextField();
         txtValor = new javax.swing.JTextField();
         btnSalvar = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        lblID = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,37 +70,49 @@ public class ViewNotaFiscal extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("ID:");
+
+        lblID.setText("0");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtNumero)
-                    .addComponent(txtValor, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
-                .addContainerGap(174, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(btnSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblID, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtNumero)
+                                .addComponent(txtValor, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addContainerGap(15, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3)
+                    .addComponent(lblID))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                    .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(18, 18, 18)
+                .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -110,20 +137,43 @@ public class ViewNotaFiscal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // Resgatar dados da interface e passar para o objeto
-        int numeroNota = Integer.parseInt(txtNumero.getText());
-        double valorNota = Double.parseDouble(txtValor.getText());
+        if(obj == null){
+            // Resgatar dados da interface e passar para o objeto
+            int numeroNota = Integer.parseInt(txtNumero.getText());
+            double valorNota = Double.parseDouble(txtValor.getText());
         
-        NotaFiscal novaNota = new NotaFiscal(numeroNota, valorNota);
+            NotaFiscal novaNota = new NotaFiscal(numeroNota, valorNota);
         
-        // TODO: mandar o objeto pra a classe DAO
-        boolean retorno = NotaFiscalDAO.salvar(novaNota);
+            // TODO: mandar o objeto pra a classe DAO
+            boolean retorno = NotaFiscalDAO.salvar(novaNota);
         
-        if (retorno == true){
-            JOptionPane.showConfirmDialog(rootPane, "Sucesso menozinho. Nota gerada: " + novaNota.getIdNota());
+            if (retorno == true){
+                JOptionPane.showConfirmDialog(rootPane, "Sucesso menozinho. Nota gerada: " + novaNota.getIdNota());
+            }else{
+                JOptionPane.showConfirmDialog(rootPane, "Não foi dessa vez baixinho");
+            }
         }else{
-            JOptionPane.showConfirmDialog(rootPane, "Não foi dessa vez baixinho");
-        }
+            // modo de alteração
+            
+            // usando dados que o usuario alterou na tela
+            int numeroNota = Integer.parseInt(txtNumero.getText());
+            double valorNota = Double.parseDouble(txtValor.getText());
+            
+            obj.setNumeroNota(numeroNota);
+            obj.setValorNota(valorNota);
+            
+            // TODO: chamar a DAO para alterar o banco
+            boolean retorno = NotaFiscalDAO.alterar(obj);
+            
+            if (retorno){
+                JOptionPane.showConfirmDialog(rootPane, "Sucesso menozinho.");
+            }else{
+                JOptionPane.showConfirmDialog(rootPane, "Não foi dessa vez baixinho");
+            }
+            
+            // fecha a tela de alteração
+            this.dispose();
+        } 
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     /**
@@ -166,7 +216,9 @@ public class ViewNotaFiscal extends javax.swing.JFrame {
     private javax.swing.JButton btnSalvar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblID;
     private javax.swing.JTextField txtNumero;
     private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables
